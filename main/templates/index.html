@@ -1,0 +1,45 @@
+{% extends "base.html" %} {% load static %} {% block main %}
+<h1>My Tasks</h1>
+
+<!-- Add Task Form -->
+<form method="POST">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit" class="success">Add Task</button>
+</form>
+
+<hr />
+
+<!-- Task List -->
+<ul>
+  {% for task in tasks %}
+  <li>
+    <div>
+      <strong>{{ task.title }}</strong> - {{ task.description|default:"No
+      description" }}
+      <span>
+        {% if task.completed %} Done {% else %} Not Done {% endif %}
+      </span>
+    </div>
+
+    <!-- Buttons -->
+    <div>
+      {% if task.completed %}
+      <a href="{% url 'toggle_task' task.id %}">
+        <button type="button" class="secondary">Mark Undone</button>
+      </a>
+      {% else %}
+      <a href="{% url 'toggle_task' task.id %}">
+        <button type="button" class="success">Mark Done</button>
+      </a>
+      {% endif %}
+
+      <a href="{% url 'delete_task' task.id %}" class="delete-link">
+        <button type="button" class="danger">Delete</button>
+      </a>
+    </div>
+  </li>
+  {% empty %}
+  <li>No tasks yet! Add one above</li>
+  {% endfor %}
+</ul>
+{% endblock main %}
